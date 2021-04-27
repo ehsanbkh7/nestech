@@ -1,7 +1,8 @@
 plugins {
     id 'com.android.library'
 }
-
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.ehsanbkh7'
 android {
     compileSdkVersion 29
     buildToolsVersion "30.0.3"
@@ -35,4 +36,7 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation ('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
 }
