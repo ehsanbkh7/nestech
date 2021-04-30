@@ -46,6 +46,7 @@ public class Nestech {
         NestechInit ninit = new NestechInit();
         preferences  = PreferenceManager.getDefaultSharedPreferences(context);
         if(!initConnection){
+            mSocket.off("init");
             mSocket.on("init", new Emitter.Listener() {
                 @Override
                 public void call(final Object... args) {
@@ -86,6 +87,7 @@ public class Nestech {
         public static void register( NestechUser user, AsyncCallback callback) {
 //            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             if(!registerConnection){
+                mSocket.off("register");
                 mSocket.on("register", new Emitter.Listener() {
                     @Override
                     public void call(final Object... args) {
@@ -130,6 +132,7 @@ public class Nestech {
             NestechFault f = new NestechFault();
 //            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             if(!loginConnection){
+                mSocket.off("login");
                 mSocket.on("login", new Emitter.Listener() {
                     @Override
                     public void call(final Object... args) {
