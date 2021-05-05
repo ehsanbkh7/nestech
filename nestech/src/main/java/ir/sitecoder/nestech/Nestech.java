@@ -32,13 +32,7 @@ import static org.json.JSONObject.wrap;
 public class Nestech {
     private static Socket mSocket;
     private static SharedPreferences preferences=null;
-    public static RequestQueue requestQueue;
-    private Nestech(Context context)
-    {
-        requestQueue = Volley.newRequestQueue(context.getApplicationContext());
-        preferences  = PreferenceManager.getDefaultSharedPreferences(context);
-        //other stuf if you need
-    }
+    public static RequestQueue requestQueue=null;
 
     AsyncCallback callback = new AsyncCallback() {
         @Override
@@ -51,10 +45,11 @@ public class Nestech {
     public static void initApp(Context context, String appid, String token, AsyncInitCallback callback) throws UnsupportedEncodingException {
 //        RequestQueue requestQueue = Volley.newRequestQueue(context);
 //        String s = URLEncoder.encode(content, "utf-8");
+        requestQueue = Volley.newRequestQueue(context.getApplicationContext());
+        preferences  = PreferenceManager.getDefaultSharedPreferences(context);
         NestechFault f = new NestechFault();
         NestechInit ninit = new NestechInit();
 
-        new Nestech(context);
         String url = "http://ne20.ir/initApp?appid="+appid+"&token="+token;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
