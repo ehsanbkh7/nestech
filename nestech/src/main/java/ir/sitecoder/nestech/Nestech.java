@@ -61,7 +61,7 @@ public class Nestech {
                         callback.handleFault(f);
                     }
                 } catch (JSONException e) {
-                    f.setMessage("Error in connect");
+                    f.setMessage("Error in connect. "+e.getMessage());
                     callback.handleFault(f);
                     e.printStackTrace();
                 }
@@ -70,7 +70,7 @@ public class Nestech {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //do dome thing
-                f.setMessage("Error in connect");
+                f.setMessage("Error in connect "+error);
                 callback.handleFault(f);
             }
         }) {
@@ -122,7 +122,7 @@ public class Nestech {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //do dome thing
-                        f.setMessage("Error in connect");
+                        f.setMessage("Error in connect : "+error);
                         callback.handleFault(f);
                     }
                 }) {
@@ -175,7 +175,7 @@ public class Nestech {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //do dome thing
-                        f.setMessage("Error in connect");
+                        f.setMessage("Error in connect: "+error);
                         callback.handleFault(f);
                     }
                 }) {
