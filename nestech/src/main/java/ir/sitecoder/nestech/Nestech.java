@@ -51,8 +51,8 @@ public class Nestech {
                     String msg = data.getString("msg");
                     if (ok) {
                         SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("NesTechAppid", appid);
-                        editor.putString("NesTechToken", token);
+                        editor.putString("NesTechLibAppid", appid);
+                        editor.putString("NesTechLibToken", token);
                         editor.apply();
                         ninit.setMessage(msg);
                         callback.handleResponse(ninit);
@@ -93,9 +93,9 @@ public class Nestech {
             if(preferences!=null){
                 Map<String, Object> map = new HashMap<String, Object>();
                 map = user.getProperties();
-                if(!preferences.getString("NesTechAppid", "").equals("")){
-                    map.put("appid", preferences.getString("NesTechAppid", ""));
-                    map.put("token", preferences.getString("NesTechToken", ""));
+                if(!preferences.getString("NesTechLibAppid", "").equals("")){
+                    map.put("appid", preferences.getString("NesTechLibAppid", ""));
+                    map.put("token", preferences.getString("NesTechLibToken", ""));
                 }
                 String url = "http://ne20.ir/register"+mapToQuery(map);
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -144,9 +144,9 @@ public class Nestech {
             if(preferences!=null){
                 Map<String, Object> map = new HashMap<String, Object>();
                 map = user.getProperties();
-                if(!preferences.getString("NesTechAppid", "").equals("")){
-                    map.put("appid", preferences.getString("NesTechAppid", ""));
-                    map.put("token", preferences.getString("NesTechToken", ""));
+                if(!preferences.getString("NesTechLibAppid", "").equals("")){
+                    map.put("appid", preferences.getString("NesTechLibAppid", ""));
+                    map.put("token", preferences.getString("NesTechLibToken", ""));
                 }
                 String url = "http://ne20.ir/login"+mapToQuery(map);
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -186,6 +186,79 @@ public class Nestech {
                     }
                 };
                 requestQueue.add(stringRequest);
+            }
+            else{
+                f.setMessage("First call the initApp method");
+                callback.handleFault(f);
+            }
+        }
+        public static void isValidLogin(NestechUser user, AsyncCallback callback) throws UnsupportedEncodingException {
+            NestechFault f = new NestechFault();
+            if(preferences!=null){
+
+                if(preferences.getInt("NesTechLibIsLogin", 0)==0){
+                    f.setMessage("User is not login");
+                    callback.handleFault(f);
+                }
+                else{
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map = user.getProperties();
+                    if(!preferences.getString("NesTechLibAppid", "").equals("")){
+                        map.put("appid", preferences.getString("NesTechLibAppid", ""));
+                        map.put("token", preferences.getString("NesTechLibToken", ""));
+                    }
+                    String url = "http://ne20.ir/login"+mapToQuery(map);
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            //do dome thing
+                            try {
+                                JSONObject data = new JSONObject(response);
+                                boolean ok = data.getBoolean("ok");
+                                String msg = data.getString("msg");
+                                if (ok) {
+                                    String created_at = data.getString("created_at");
+                                    user.setProperty("created_at",created_at);
+                                    callback.handleResponse(user);
+                                } else {
+                                    f.setMessage(msg);
+                                    callback.handleFault(f);
+                                }
+                            } catch (JSONException e) {
+                                f.setMessage(e.getMessage());
+                                callback.handleFault(f);
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //do dome thing
+                            f.setMessage("Error in connect");
+                            callback.handleFault(f);
+                        }
+                    }) {
+                        @Override
+                        protected Map<String, String> getParams() {
+                            Map<String, String> Data = new HashMap<>();
+                            return Data;
+                        }
+                    };
+                    requestQueue.add(stringRequest);
+                }
+            }
+            else{
+                f.setMessage("First call the initApp method");
+                callback.handleFault(f);
+            }
+        }
+        public static void logout(NestechUser user, AsyncCallback callback) throws UnsupportedEncodingException {
+            NestechFault f = new NestechFault();
+            if(preferences!=null){
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putInt("NesTechLibIsLogin", 0);
+                editor.apply();
+                callback.handleResponse(user);
             }
             else{
                 f.setMessage("First call the initApp method");
