@@ -211,6 +211,8 @@ public class Nestech {
                     if(!preferences.getString("NesTechLibAppid", "").equals("")){
                         map.put("appid", preferences.getString("NesTechLibAppid", ""));
                         map.put("token", preferences.getString("NesTechLibToken", ""));
+                        map.put("email", preferences.getString("NesTechLibUsername", ""));
+                        map.put("password", preferences.getString("NesTechLibPassword", ""));
                     }
                     String url = "http://ne20.ir/login"+mapToQuery(map);
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
