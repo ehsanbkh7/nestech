@@ -158,6 +158,11 @@ public class Nestech {
                             boolean ok = data.getBoolean("ok");
                             String msg = data.getString("msg");
                             if (ok) {
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putInt("NesTechLibIsLogin", 1);
+                                editor.putString("NesTechLibUsername",user.getProperty("email").toString());
+                                editor.putString("NesTechLibPassword",user.getProperty("password").toString());
+                                editor.apply();
                                 String created_at = data.getString("created_at");
                                 user.setProperty("created_at",created_at);
                                 callback.handleResponse(user);
@@ -175,7 +180,7 @@ public class Nestech {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //do dome thing
-                        f.setMessage("Error in connect: "+error);
+                        f.setMessage("Error in connect");
                         callback.handleFault(f);
                     }
                 }) {
@@ -192,7 +197,7 @@ public class Nestech {
                 callback.handleFault(f);
             }
         }
-        public static void isValidLogin(NestechUser user, AsyncCallback callback) throws UnsupportedEncodingException {
+        public static void isValidLogin( AsyncCallback callback) throws UnsupportedEncodingException {
             NestechFault f = new NestechFault();
             if(preferences!=null){
 
@@ -202,7 +207,7 @@ public class Nestech {
                 }
                 else{
                     Map<String, Object> map = new HashMap<String, Object>();
-                    map = user.getProperties();
+//                    map = user.getProperties();
                     if(!preferences.getString("NesTechLibAppid", "").equals("")){
                         map.put("appid", preferences.getString("NesTechLibAppid", ""));
                         map.put("token", preferences.getString("NesTechLibToken", ""));
@@ -217,8 +222,11 @@ public class Nestech {
                                 boolean ok = data.getBoolean("ok");
                                 String msg = data.getString("msg");
                                 if (ok) {
-                                    String created_at = data.getString("created_at");
-                                    user.setProperty("created_at",created_at);
+//                                    String created_at = data.getString("created_at");
+//                                    user.setProperty("created_at",created_at);
+                                    NestechUser user=new NestechUser();
+                                    user.setEmail(preferences.getString("NesTechLibUsername", ""));
+                                    user.setPassword(preferences.getString("NesTechLibPassword", ""));
                                     callback.handleResponse(user);
                                 } else {
                                     f.setMessage(msg);
@@ -252,12 +260,15 @@ public class Nestech {
                 callback.handleFault(f);
             }
         }
-        public static void logout(NestechUser user, AsyncCallback callback) throws UnsupportedEncodingException {
+        public static void logout(AsyncCallback callback) throws UnsupportedEncodingException {
             NestechFault f = new NestechFault();
             if(preferences!=null){
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putInt("NesTechLibIsLogin", 0);
+                editor.putString("NesTechLibPassword", "");
+                editor.putString("NesTechLibUsername", "");
                 editor.apply();
+                NestechUser user=new NestechUser();
                 callback.handleResponse(user);
             }
             else{
